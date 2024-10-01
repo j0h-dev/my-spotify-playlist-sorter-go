@@ -57,11 +57,21 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 
 	// Get the playlist and its tracks to clone
 	playlist, err := playlistutils.GetPlaylist(cmd.Sp, playlistId)
+
+	if err != nil {
+		return fmt.Errorf("failed to get playlist: %w", err)
+	}
+
 	tracks, err := playlistutils.GetPlaylistTracks(cmd.Sp, playlistId)
+
+	if err != nil {
+		return fmt.Errorf("failed to get playlist tracks: %w", err)
+	}
+
 	user, err := cmd.Sp.CurrentUser(ctx.Context)
 
 	if err != nil {
-		return fmt.Errorf("Something went wront with setting up cloning operation: %w", err)
+		return fmt.Errorf("something went wront with setting up cloning operation: %w", err)
 	}
 
 	// Setting up variables to create the playlist
@@ -79,7 +89,7 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	clonedPlaylist, err := cmd.Sp.CreatePlaylistForUser(ctx.Context, user.ID, newPlaylistName, description, isPlaylistPublic, isPlaylistCollaborative)
 
 	if err != nil {
-		return fmt.Errorf("Failed to create new playlist for user: %w", err)
+		return fmt.Errorf("failed to create new playlist for user: %w", err)
 	}
 
 	bar := progressbar.Default(int64(len(tracks)), "Filtering out local tracks")
