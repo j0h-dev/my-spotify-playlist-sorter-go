@@ -147,44 +147,45 @@ func (cmd *SortCommand) reorderPlaylistTracks(ctx *cli.Context, playlistID spoti
 	var snapshotID string
 
 	// Track which positions are out of place
-	for i := range sortedTracks {
-		if sortedTracks[i].Track.Track.URI == currentTracks[i].Track.Track.URI {
+	i := 0
+	for i < len(unsortedTracks) {
+		if unsortedTracks[i].Track.Track.URI == sortedTracks[i].Track.Track.URI {
+			i++
 			bar.Add(1)
 			continue
 		}
 
-		for j := range currentTracks {
-			if currentTracks[j].Track.Track.URI != sortedTracks[i].Track.Track.URI {
-				continue
-			}
+		targetIndex := cmd.findIndex(unsortedTracks, sortedTracks[i])
 
-			// Create reorder options for a single track
-			reorderOptions := spotify.PlaylistReorderOptions{
-				RangeStart:   spotify.Numeric(j),
-				RangeLength:  spotify.Numeric(1),
-				InsertBefore: spotify.Numeric(i),
-			}
-
-			if snapshotID != "" {
-				reorderOptions.SnapshotID = snapshotID
-			}
-
-			newSnapshotID, err := cmd.Sp.ReorderPlaylistTracks(ctx.Context, playlistID, reorderOptions)
-			if err != nil {
-				return fmt.Errorf("failed to reorder track %s from position %d: %w", sortedTracks[i].Track.Track.URI, j, err)
-			}
-
-			temp := currentTracks[j]
-			currentTracks = slices.Delete(currentTracks, j, j+1)
-			currentTracks = slices.Insert(currentTracks, i, temp)
-
-			// Update the snapshotID for the next reordering operation
-			snapshotID = newSnapshotID
-
-			bar.Add(1)
-
-			break
+		if targetIndex == -1 {
+			log.Panicf("Track %s not found in the current playlist", sortedTracks[i].Track.Track.URI)
 		}
+
+		// Create reorder options for a single track
+		reorderOptions := spotify.PlaylistReorderOptions{
+			RangeStart:   spotify.Numeric(targetIndex),
+			RangeLength:  spotify.Numeric(1),
+			InsertBefore: spotify.Numeric(i),
+		}
+
+		if snapshotID != "" {
+			reorderOptions.SnapshotID = snapshotID
+		}
+
+		newSnapshotID, err := cmd.Sp.ReorderPlaylistTracks(ctx.Context, playlistID, reorderOptions)
+		if err != nil {
+			return fmt.Errorf("failed to reorder track %s from position %d: %w", sortedTracks[i].Track.Track.URI, targetIndex, err)
+		}
+
+		temp := unsortedTracks[targetIndex]
+		unsortedTracks = slices.Delete(unsortedTracks, targetIndex, targetIndex+1)
+		unsortedTracks = slices.Insert(unsortedTracks, i, temp)
+
+		// Update the snapshotID for the next reordering operation
+		snapshotID = newSnapshotID
+
+		bar.Add(1)
+		i++
 	}
 
 	return nil
@@ -234,4 +235,14 @@ func (cmd *SortCommand) removeDuplicateTracksFromPlaylist(ctx *cli.Context, play
 	}
 
 	return uniqueTracks, nil
+}
+
+// Helper function to find the index of an element in an array
+func (cmd *SortCommand) findIndex(arr []*spotify.PlaylistItem, value *spotify.PlaylistItem) int {
+	for i, v := range arr {
+		if v.Track.Track.URI == value.Track.Track.URI {
+			return i
+		}
+	}
+	return -1
 }
