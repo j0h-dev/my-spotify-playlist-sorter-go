@@ -3,7 +3,6 @@ package clicommands
 import (
 	"fmt"
 	"log"
-	"os"
 	"slices"
 	"sort"
 	"time"
@@ -115,22 +114,6 @@ func (cmd *SortCommand) Run(ctx *cli.Context) error {
 		bar.Add(1)
 	}
 
-	f, err := os.Create("test.txt")
-	if err != nil {
-		fmt.Println(err)
-	}
-	for _, track := range sortedTracks {
-		_, err := f.WriteString(track.Track.Track.Album.Name + " " + track.Track.Track.Artists[0].Name + " - " + track.Track.Track.Name + "\n")
-		if err != nil {
-			fmt.Println(err)
-			f.Close()
-		}
-	}
-	err = f.Close()
-	if err != nil {
-		fmt.Println(err)
-	}
-
 	// Step 5: Reorder the playlist
 	err = cmd.reorderPlaylistTracks(ctx, playlistId, tracks, sortedTracks)
 	if err != nil {
@@ -141,7 +124,7 @@ func (cmd *SortCommand) Run(ctx *cli.Context) error {
 	return nil
 }
 
-func (cmd *SortCommand) reorderPlaylistTracks(ctx *cli.Context, playlistID spotify.ID, currentTracks, sortedTracks []*spotify.PlaylistItem) error {
+func (cmd *SortCommand) reorderPlaylistTracks(ctx *cli.Context, playlistID spotify.ID, unsortedTracks, sortedTracks []*spotify.PlaylistItem) error {
 	bar := progressbar.Default(int64(len(sortedTracks)), "Applying changes to the playlist")
 
 	var snapshotID string
