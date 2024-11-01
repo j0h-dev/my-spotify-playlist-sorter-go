@@ -1,6 +1,10 @@
 package urlutils
 
-import "strings"
+import (
+	"fmt"
+	"regexp"
+	"strings"
+)
 
 func ExtractSpotifyID(url string) string {
 	parts := strings.Split(url, "/")
@@ -12,4 +16,14 @@ func ExtractSpotifyID(url string) string {
 	}
 
 	return url
+}
+
+func ExtractPortFromURL(url string) (string, error) {
+	re := regexp.MustCompile(`:(\d+)(?=[^\d]*$)`)
+	match := re.FindStringSubmatch(url)
+
+	if len(match) > 1 {
+		return match[1], nil
+	}
+	return "", fmt.Errorf("no port found in the URL")
 }

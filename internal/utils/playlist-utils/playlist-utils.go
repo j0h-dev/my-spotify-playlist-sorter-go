@@ -2,6 +2,7 @@ package playlistutils
 
 import (
 	"context"
+	"log"
 	"math"
 	"os"
 
@@ -12,7 +13,10 @@ import (
 func GetPlaylist(sp *spotify.Client, playlistId spotify.ID) (*spotify.FullPlaylist, error) {
 	ctx := context.Background()
 
-	country := os.Getenv("COUNTRY")
+	country, exists := os.LookupEnv("COUNTRY")
+	if !exists {
+		log.Fatal("COUNTRY environment variable not set")
+	}
 	playlist, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
 	if err != nil {
@@ -25,7 +29,10 @@ func GetPlaylist(sp *spotify.Client, playlistId spotify.ID) (*spotify.FullPlayli
 func GetPlaylistTracks(sp *spotify.Client, playlistId spotify.ID) ([]*spotify.PlaylistItem, error) {
 	ctx := context.Background()
 
-	country := os.Getenv("COUNTRY")
+	country, exists := os.LookupEnv("COUNTRY")
+	if !exists {
+		log.Fatal("COUNTRY environment variable not set")
+	}
 	playlistDetails, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
 	if err != nil {

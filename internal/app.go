@@ -10,6 +10,7 @@ import (
 
 	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/cli-commands"
 	spotifytoken "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/spotify-token"
+	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
@@ -78,7 +79,17 @@ func handleSpotifyAuthentication() {
 	url := spotifyAuthenticator.AuthURL("main")
 	fmt.Println("Please log in to Spotify by visiting the following page: \n", url)
 
-	server := &http.Server{Addr: ":8080"}
+	redirect_url, exists := os.LookupEnv("SPOTIFY_REDIRECT")
+	if !exists {
+		log.Fatal("SPOTIFY_REDIRECT environment variable not set")
+	}
+
+	port, err := urlutils.ExtractPortFromURL(redirect_url)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	server := &http.Server{Addr: fmt.Sprintf(":%s", port)}
 
 	http.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
 		success := "Log in successful! You can go back to the application :)"
