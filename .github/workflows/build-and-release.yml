@@ -20,13 +20,13 @@ jobs:
 
       - name: Build binary
         run: |
-          go build -o sps ./cmd/app
+          make build
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3
         with:
           name: sps
-          path: ./sps
+          path: ./build/sps
 
   release:
     needs: build
