@@ -19,7 +19,7 @@ func ExtractSpotifyID(url string) string {
 }
 
 func ExtractPortFromURL(url string) (string, error) {
-	re := regexp.MustCompile(`:(\d+)(?=[^\d]*$)`)
+	re := regexp.MustCompile(`:(\d+)`)
 	match := re.FindStringSubmatch(url)
 
 	if len(match) > 1 {
