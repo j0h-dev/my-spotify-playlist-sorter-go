@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/cli-commands"
-	spotifytoken "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/spotify-token"
+	spotify_utils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/spotify"
 	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v2"
@@ -65,7 +65,7 @@ func createCLIApp() {
 func handleSpotifyAuthentication() {
 	spotifyAuthenticator = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURL), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
 
-	token, _ := spotifytoken.GetSpotifyToken()
+	token, _ := spotify_utils.GetSpotifyToken()
 	ctx := context.Background()
 
 	if token != nil {
@@ -103,7 +103,7 @@ func handleSpotifyAuthentication() {
 			return
 		}
 
-		spotifytoken.SaveSpotifyToken(token)
+		spotify_utils.SaveSpotifyToken(token)
 		spotifyClient = spotify.New(spotifyAuthenticator.Client(r.Context(), token))
 
 		go func() {

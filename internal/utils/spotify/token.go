@@ -1,4 +1,4 @@
-package spotifytoken
+package spotify
 
 import (
 	"encoding/json"
