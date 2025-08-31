@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/playlists"
-	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
@@ -53,7 +52,7 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	fmt.Printf("Duplicate command\n\n")
 
 	playlistUrl := ctx.String("playlist")
-	playlistId := spotify.ID(urlutils.ExtractSpotifyID(playlistUrl))
+	playlistId := spotify.ID(playlists.ExtractSpotifyID(playlistUrl))
 
 	// Get the playlist and its tracks to clone
 	playlist, err := playlists.GetPlaylist(cmd.Sp, playlistId)

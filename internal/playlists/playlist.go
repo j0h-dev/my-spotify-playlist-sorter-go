@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"strings"
 
 	"github.com/schollz/progressbar/v3"
 	"github.com/zmb3/spotify/v2"
@@ -66,4 +67,16 @@ func GetPlaylistTracks(sp *spotify.Client, playlistId spotify.ID) ([]*spotify.Pl
 	}
 
 	return tracks, nil
+}
+
+func ExtractSpotifyID(url string) string {
+	parts := strings.Split(url, "/")
+
+	if len(parts) >= 5 {
+		idWithQuery := parts[len(parts)-1]
+		id := strings.Split(idWithQuery, "?")[0]
+		return id
+	}
+
+	return url
 }

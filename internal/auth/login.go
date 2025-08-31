@@ -8,7 +8,6 @@ import (
 	"sync"
 
 	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/config"
-	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )
@@ -47,7 +46,7 @@ func Login(config *config.Config) (*spotify.Client, error) {
 	url := spotifyAuthenticator.AuthURL("main")
 	fmt.Println("Please log in to Spotify by visiting the following page: \n", url)
 
-	port, err := urlutils.ExtractPortFromURL(config.Spotify.Redirect)
+	port, err := extractPortFromURL(config.Spotify.Redirect)
 	if err != nil {
 		return nil, err
 	}
