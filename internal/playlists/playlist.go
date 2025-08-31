@@ -1,4 +1,4 @@
-package playlistutils
+package playlists
 
 import (
 	"context"

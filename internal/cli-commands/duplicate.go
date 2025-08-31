@@ -3,7 +3,7 @@ package clicommands
 import (
 	"fmt"
 
-	playlistutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/playlist-utils"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/playlists"
 	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"
@@ -56,13 +56,13 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	playlistId := spotify.ID(urlutils.ExtractSpotifyID(playlistUrl))
 
 	// Get the playlist and its tracks to clone
-	playlist, err := playlistutils.GetPlaylist(cmd.Sp, playlistId)
+	playlist, err := playlists.GetPlaylist(cmd.Sp, playlistId)
 
 	if err != nil {
 		return fmt.Errorf("failed to get playlist: %w", err)
 	}
 
-	tracks, err := playlistutils.GetPlaylistTracks(cmd.Sp, playlistId)
+	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId)
 
 	if err != nil {
 		return fmt.Errorf("failed to get playlist tracks: %w", err)

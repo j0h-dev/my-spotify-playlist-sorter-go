@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	playlistutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/playlist-utils"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/playlists"
 	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/schollz/progressbar/v3"
 
@@ -42,7 +42,7 @@ func (cmd *SortCommand) Run(ctx *cli.Context) error {
 	playlistUrl := ctx.String("playlist")
 	playlistId := spotify.ID(urlutils.ExtractSpotifyID(playlistUrl))
 
-	tracks, err := playlistutils.GetPlaylistTracks(cmd.Sp, playlistId)
+	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId)
 
 	if err != nil {
 		log.Fatal(err)
