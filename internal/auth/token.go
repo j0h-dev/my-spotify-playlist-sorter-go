@@ -1,4 +1,4 @@
-package spotify
+package auth
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 
 const tokenFileName = "spotify_token.json"
 
-func GetSpotifyToken() (*oauth2.Token, error) {
+func getSpotifyToken() (*oauth2.Token, error) {
 	token := &oauth2.Token{}
 
 	err := readJSONFromFile(tokenFileName, token)
@@ -21,7 +21,7 @@ func GetSpotifyToken() (*oauth2.Token, error) {
 	return token, nil
 }
 
-func SaveSpotifyToken(token *oauth2.Token) error {
+func saveSpotifyToken(token *oauth2.Token) error {
 	return writeJSONToFile(tokenFileName, token)
 }
 
