@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/config"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/config"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )

@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/playlists"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/playlists"
 	"github.com/schollz/progressbar/v3"
 
 	"github.com/elliotchance/orderedmap/v2"

@@ -1,18 +1,18 @@
-package internal
+package main
 
 import (
 	"log"
 	"os"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/auth"
-	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/cli-commands"
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/config"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/auth"
+	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/cli-commands"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/config"
 	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
 )
 
-func Run() {
+func main() {
 	// Load environment variables from .env file
 	godotenv.Load()
 

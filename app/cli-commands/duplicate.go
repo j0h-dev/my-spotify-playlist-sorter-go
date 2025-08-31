@@ -3,7 +3,7 @@ package clicommands
 import (
 	"fmt"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/playlists"
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/playlists"
 	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
