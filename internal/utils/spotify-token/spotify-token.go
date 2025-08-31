@@ -25,7 +25,7 @@ func SaveSpotifyToken(token *oauth2.Token) error {
 	return writeJSONToFile(tokenFileName, token)
 }
 
-func writeJSONToFile(fileName string, data interface{}) error {
+func writeJSONToFile(fileName string, data any) error {
 	jsonData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err
@@ -34,7 +34,7 @@ func writeJSONToFile(fileName string, data interface{}) error {
 	return os.WriteFile(fileName, jsonData, 0644)
 }
 
-func readJSONFromFile(fileName string, data interface{}) error {
+func readJSONFromFile(fileName string, data any) error {
 	jsonData, err := os.ReadFile(fileName)
 	if err != nil {
 		return err
