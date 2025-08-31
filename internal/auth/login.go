@@ -5,17 +5,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 
+	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/config"
 	urlutils "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/internal/utils/url-utils"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )
 
 const (
-	state       = "main"
-	redirectURL = "http://localhost:3000/api/auth"
+	state = "main"
 )
 
 var (
@@ -23,13 +22,18 @@ var (
 	spotifyClient        *spotify.Client
 )
 
-func Login() (*spotify.Client, error) {
+type LoginParams struct {
+	Redirect string
+}
+
+func Login(config *config.Config) (*spotify.Client, error) {
 	spotifyAuthenticator = spotifyauth.New(
-		spotifyauth.WithRedirectURL(redirectURL),
+		spotifyauth.WithRedirectURL(config.Spotify.Redirect),
 		spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate),
 	)
 
 	token, _ := getSpotifyToken()
+
 	ctx := context.Background()
 
 	if token != nil {
@@ -43,12 +47,7 @@ func Login() (*spotify.Client, error) {
 	url := spotifyAuthenticator.AuthURL("main")
 	fmt.Println("Please log in to Spotify by visiting the following page: \n", url)
 
-	redirect_url, exists := os.LookupEnv("SPOTIFY_REDIRECT")
-	if !exists {
-		log.Fatal("SPOTIFY_REDIRECT environment variable not set")
-	}
-
-	port, err := urlutils.ExtractPortFromURL(redirect_url)
+	port, err := urlutils.ExtractPortFromURL(config.Spotify.Redirect)
 	if err != nil {
 		return nil, err
 	}
