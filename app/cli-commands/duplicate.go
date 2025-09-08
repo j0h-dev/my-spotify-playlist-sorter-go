@@ -63,6 +63,11 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	country := ctx.String("country")
 	if country == "" {
 		loc := time.Now().Location().String()
+
+		if loc == "Local" {
+			return fmt.Errorf("Could not determine country, please provide a country code using the --country flag")
+		}
+
 		capital := strings.Split(loc, "/")[1]
 		country = countries.GetByCapital(capital).Alpha2
 	}
