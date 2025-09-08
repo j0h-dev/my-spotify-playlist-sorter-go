@@ -2,4 +2,7 @@
 
 build/
 .env
+
+# Token & credentials
 spotify_token.json
+spotify_credentials.json
