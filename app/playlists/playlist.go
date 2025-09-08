@@ -2,22 +2,20 @@ package playlists
 
 import (
 	"context"
-	"log"
 	"math"
-	"os"
 	"strings"
 
 	"github.com/schollz/progressbar/v3"
 	"github.com/zmb3/spotify/v2"
 )
 
-func GetPlaylist(sp *spotify.Client, playlistId spotify.ID) (*spotify.FullPlaylist, error) {
+func GetPlaylist(
+	sp *spotify.Client,
+	playlistId spotify.ID,
+	country string,
+) (*spotify.FullPlaylist, error) {
 	ctx := context.Background()
 
-	country, exists := os.LookupEnv("COUNTRY")
-	if !exists {
-		log.Fatal("COUNTRY environment variable not set")
-	}
 	playlist, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
 	if err != nil {
@@ -27,13 +25,13 @@ func GetPlaylist(sp *spotify.Client, playlistId spotify.ID) (*spotify.FullPlayli
 	return playlist, nil
 }
 
-func GetPlaylistTracks(sp *spotify.Client, playlistId spotify.ID) ([]*spotify.PlaylistItem, error) {
+func GetPlaylistTracks(
+	sp *spotify.Client,
+	playlistId spotify.ID,
+	country string,
+) ([]*spotify.PlaylistItem, error) {
 	ctx := context.Background()
 
-	country, exists := os.LookupEnv("COUNTRY")
-	if !exists {
-		log.Fatal("COUNTRY environment variable not set")
-	}
 	playlistDetails, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
 	if err != nil {

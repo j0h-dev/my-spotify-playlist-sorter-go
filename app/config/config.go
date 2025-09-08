@@ -12,10 +12,6 @@ type Config struct {
 		// This can be left as is, and it should work.
 		// If propblems occur then change the port to something else
 		Redirect string `envconfig:"SPOTIFY_REDIRECT" validate:"required,url"`
-
-		// ISO 3166-1 alpha-2 country code
-		// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-		Country string `envconfig:"COUNTRY" validate:"required,len=2"`
 	}
 }
 

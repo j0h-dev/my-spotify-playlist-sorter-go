@@ -2,8 +2,11 @@ package clicommands
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/playlists"
+	"github.com/mrz1836/go-countries"
 	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
@@ -43,6 +46,12 @@ func (cmd *DuplicateCommand) New() *cli.Command {
 				DefaultText: "false",
 				Required:    false,
 			},
+			&cli.StringFlag{
+				Name:     "country",
+				Usage:    "The country code for market-specific track availability (e.g., US, GB, DE). If not provided, it defaults to the user's locale.",
+				Aliases:  []string{"c"},
+				Required: false,
+			},
 		},
 		Action: cmd.Run,
 	}
@@ -51,17 +60,24 @@ func (cmd *DuplicateCommand) New() *cli.Command {
 func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	fmt.Printf("Duplicate command\n\n")
 
+	country := ctx.String("country")
+	if country == "" {
+		loc := time.Now().Location().String()
+		capital := strings.Split(loc, "/")[1]
+		country = countries.GetByCapital(capital).Alpha2
+	}
+
 	playlistUrl := ctx.String("playlist")
 	playlistId := spotify.ID(playlists.ExtractSpotifyID(playlistUrl))
 
 	// Get the playlist and its tracks to clone
-	playlist, err := playlists.GetPlaylist(cmd.Sp, playlistId)
+	playlist, err := playlists.GetPlaylist(cmd.Sp, playlistId, country)
 
 	if err != nil {
 		return fmt.Errorf("failed to get playlist: %w", err)
 	}
 
-	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId)
+	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId, country)
 
 	if err != nil {
 		return fmt.Errorf("failed to get playlist tracks: %w", err)

@@ -5,9 +5,11 @@ import (
 	"log"
 	"slices"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/playlists"
+	"github.com/mrz1836/go-countries"
 	"github.com/schollz/progressbar/v3"
 
 	"github.com/elliotchance/orderedmap/v2"
@@ -30,6 +32,12 @@ func (cmd *SortCommand) New() *cli.Command {
 				Aliases:  []string{"p"},
 				Required: true,
 			},
+			&cli.StringFlag{
+				Name:     "country",
+				Usage:    "The country code for market-specific track availability (e.g., US, GB, DE). If not provided, it defaults to the user's locale.",
+				Aliases:  []string{"c"},
+				Required: false,
+			},
 		},
 		Action: cmd.Run,
 	}
@@ -41,7 +49,14 @@ func (cmd *SortCommand) Run(ctx *cli.Context) error {
 	playlistUrl := ctx.String("playlist")
 	playlistId := spotify.ID(playlists.ExtractSpotifyID(playlistUrl))
 
-	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId)
+	country := ctx.String("country")
+	if country == "" {
+		loc := time.Now().Location().String()
+		capital := strings.Split(loc, "/")[1]
+		country = countries.GetByCapital(capital).Alpha2
+	}
+
+	tracks, err := playlists.GetPlaylistTracks(cmd.Sp, playlistId, country)
 
 	if err != nil {
 		log.Fatal(err)
