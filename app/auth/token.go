@@ -7,38 +7,61 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const tokenFileName = "spotify_token.json"
+const OAUTH_TOKEN_FILE = "spotify_token.json"
+const SPOTIFY_CREDENTIALS_FILE = "spotify_credentials.json"
 
-func getSpotifyToken() (*oauth2.Token, error) {
+func readOAuthToken() *oauth2.Token {
 	token := &oauth2.Token{}
 
-	err := readJSONFromFile(tokenFileName, token)
-
+	jsonData, err := os.ReadFile(OAUTH_TOKEN_FILE)
 	if err != nil {
-		return nil, err
+		return nil
 	}
 
-	return token, nil
-}
-
-func saveSpotifyToken(token *oauth2.Token) error {
-	return writeJSONToFile(tokenFileName, token)
-}
-
-func writeJSONToFile(fileName string, data any) error {
-	jsonData, err := json.MarshalIndent(data, "", "  ")
+	err = json.Unmarshal(jsonData, token)
 	if err != nil {
-		return err
+		return nil
 	}
 
-	return os.WriteFile(fileName, jsonData, 0644)
+	return token
 }
 
-func readJSONFromFile(fileName string, data any) error {
-	jsonData, err := os.ReadFile(fileName)
+func saveOAuthToken(token *oauth2.Token) error {
+	jsonData, err := json.MarshalIndent(token, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	return json.Unmarshal(jsonData, data)
+	return os.WriteFile(OAUTH_TOKEN_FILE, jsonData, 0644)
+}
+
+type SpotifyCredentials struct {
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	RedirectURI  string `json:"redirect_uri"`
+}
+
+func readSpotifyCredentials() *SpotifyCredentials {
+	credentials := &SpotifyCredentials{}
+
+	jsonData, err := os.ReadFile(SPOTIFY_CREDENTIALS_FILE)
+	if err != nil {
+		return nil
+	}
+
+	err = json.Unmarshal(jsonData, credentials)
+	if err != nil {
+		return nil
+	}
+
+	return credentials
+}
+
+func saveSpotifyCredentials(credentials *SpotifyCredentials) error {
+	jsonData, err := json.MarshalIndent(credentials, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(SPOTIFY_CREDENTIALS_FILE, jsonData, 0644)
 }

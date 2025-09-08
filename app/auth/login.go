@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/config"
 	"github.com/zmb3/spotify/v2"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
 )
@@ -21,22 +20,52 @@ var (
 	spotifyClient        *spotify.Client
 )
 
-type LoginParams struct {
-	Redirect string
-}
+func Login() (*spotify.Client, error) {
+	credentials := readSpotifyCredentials()
+	if credentials == nil {
+		var spotifyId string
+		for spotifyId == "" {
+			fmt.Print("Enter your Spotify Client ID: ")
+			fmt.Scanln(&spotifyId)
+		}
 
-func Login(config *config.Config) (*spotify.Client, error) {
+		var spotifySecret string
+		for spotifySecret == "" {
+			fmt.Print("Enter your Spotify Client Secret: ")
+			fmt.Scanln(&spotifySecret)
+		}
+
+		redirectLink := "http://localhost:8080/api/auth"
+		fmt.Print("Enter redirect link set in for you app (default: http://localhost:8080/api/auth): ")
+		fmt.Scanln(&redirectLink)
+
+		credentials = &SpotifyCredentials{
+			ClientID:     spotifyId,
+			ClientSecret: spotifySecret,
+			RedirectURI:  redirectLink,
+		}
+
+		saveSpotifyCredentials(credentials)
+	}
+
 	spotifyAuthenticator = spotifyauth.New(
-		spotifyauth.WithRedirectURL(config.Spotify.Redirect),
-		spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate),
+		spotifyauth.WithScopes(
+			spotifyauth.ScopeUserReadPrivate,
+			spotifyauth.ScopePlaylistReadPrivate,
+			spotifyauth.ScopePlaylistModifyPrivate,
+			spotifyauth.ScopePlaylistModifyPublic,
+			spotifyauth.ScopePlaylistReadCollaborative,
+			spotifyauth.ScopeUserLibraryModify,
+			spotifyauth.ScopeUserLibraryRead,
+		),
+		spotifyauth.WithRedirectURL(credentials.RedirectURI),
+		spotifyauth.WithClientID(credentials.ClientID),
+		spotifyauth.WithClientSecret(credentials.ClientSecret),
 	)
 
-	token, _ := getSpotifyToken()
-
-	ctx := context.Background()
-
+	token := readOAuthToken()
 	if token != nil {
-		spotifyClient = spotify.New(spotifyAuthenticator.Client(ctx, token))
+		spotifyClient = spotify.New(spotifyAuthenticator.Client(context.Background(), token))
 		return spotifyClient, nil
 	}
 
@@ -46,7 +75,7 @@ func Login(config *config.Config) (*spotify.Client, error) {
 	url := spotifyAuthenticator.AuthURL(STATE)
 	fmt.Println("Please log in to Spotify by visiting the following page: \n", url)
 
-	port, err := extractPortFromURL(config.Spotify.Redirect)
+	port, err := extractPortFromURL(credentials.RedirectURI)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +94,7 @@ func Login(config *config.Config) (*spotify.Client, error) {
 			return
 		}
 
-		saveSpotifyToken(token)
+		saveOAuthToken(token)
 		spotifyClient = spotify.New(spotifyAuthenticator.Client(r.Context(), token))
 
 		go func() {

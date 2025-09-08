@@ -6,19 +6,12 @@ import (
 
 	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/auth"
 	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/cli-commands"
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/config"
-	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
 )
 
 func main() {
-	// Load environment variables from .env file
-	godotenv.Load()
-
-	config := config.Load()
-
-	client, err := auth.Login(config)
+	client, err := auth.Login()
 	if err != nil {
 		log.Fatalf("Failed to login to Spotify: %v", err)
 	}
