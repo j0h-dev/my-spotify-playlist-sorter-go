@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	state = "main"
+	STATE = "main"
 )
 
 var (
@@ -59,7 +59,7 @@ func Login(config *config.Config) (*spotify.Client, error) {
 		fmt.Fprintln(w, success)
 		log.Println(success)
 
-		token, err := spotifyAuthenticator.Token(r.Context(), state, r)
+		token, err := spotifyAuthenticator.Token(r.Context(), STATE, r)
 		if err != nil {
 			http.Error(w, "Couldn't get token", http.StatusNotFound)
 			return
