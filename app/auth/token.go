@@ -3,7 +3,9 @@ package auth
 import (
 	"encoding/json"
 	"os"
+	"path"
 
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/app/appdata"
 	"golang.org/x/oauth2"
 )
 
@@ -13,7 +15,12 @@ const SPOTIFY_CREDENTIALS_FILE = "spotify_credentials.json"
 func readOAuthToken() *oauth2.Token {
 	token := &oauth2.Token{}
 
-	jsonData, err := os.ReadFile(OAUTH_TOKEN_FILE)
+	appdata, err := appdata.GetAppDataDir()
+	if err != nil {
+		return nil
+	}
+
+	jsonData, err := os.ReadFile(path.Join(appdata, OAUTH_TOKEN_FILE))
 	if err != nil {
 		return nil
 	}
@@ -32,7 +39,12 @@ func saveOAuthToken(token *oauth2.Token) error {
 		return err
 	}
 
-	return os.WriteFile(OAUTH_TOKEN_FILE, jsonData, 0644)
+	appdata, err := appdata.GetAppDataDir()
+	if err != nil {
+		return nil
+	}
+
+	return os.WriteFile(path.Join(appdata, OAUTH_TOKEN_FILE), jsonData, 0644)
 }
 
 type SpotifyCredentials struct {
@@ -44,7 +56,12 @@ type SpotifyCredentials struct {
 func readSpotifyCredentials() *SpotifyCredentials {
 	credentials := &SpotifyCredentials{}
 
-	jsonData, err := os.ReadFile(SPOTIFY_CREDENTIALS_FILE)
+	appdata, err := appdata.GetAppDataDir()
+	if err != nil {
+		return nil
+	}
+
+	jsonData, err := os.ReadFile(path.Join(appdata, SPOTIFY_CREDENTIALS_FILE))
 	if err != nil {
 		return nil
 	}
@@ -63,5 +80,10 @@ func saveSpotifyCredentials(credentials *SpotifyCredentials) error {
 		return err
 	}
 
-	return os.WriteFile(SPOTIFY_CREDENTIALS_FILE, jsonData, 0644)
+	appdata, err := appdata.GetAppDataDir()
+	if err != nil {
+		return nil
+	}
+
+	return os.WriteFile(path.Join(appdata, SPOTIFY_CREDENTIALS_FILE), jsonData, 0644)
 }
