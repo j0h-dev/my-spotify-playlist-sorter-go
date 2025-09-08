@@ -38,7 +38,6 @@ func createCli(client *spotify.Client) error {
 	}
 
 	app := &cli.App{
-		Name:  "sps",
 		Usage: "Spotify Playlist Sorter CLI",
 		Commands: []*cli.Command{
 			cliCommands.sortCommand.New(),
