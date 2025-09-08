@@ -1,6 +1,6 @@
 # Variables
 APP_NAME := sps
-MAIN_ENTRY := ./app/sps.go
+MAIN_ENTRY := ./app/main.go
 BUILD_DIR := build
 PKG := ./...
 

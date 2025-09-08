@@ -32,7 +32,7 @@ jobs:
           mkdir -p build
           EXT=""
           if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/sps-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./app/sps.go
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/sps-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./app/main.go
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
