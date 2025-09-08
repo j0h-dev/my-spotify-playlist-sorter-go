@@ -43,7 +43,7 @@ func Login(config *config.Config) (*spotify.Client, error) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	url := spotifyAuthenticator.AuthURL("main")
+	url := spotifyAuthenticator.AuthURL(STATE)
 	fmt.Println("Please log in to Spotify by visiting the following page: \n", url)
 
 	port, err := extractPortFromURL(config.Spotify.Redirect)
