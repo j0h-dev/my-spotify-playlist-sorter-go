@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/playlists"
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/app/playlists"
 	"github.com/mrz1836/go-countries"
 	"github.com/schollz/progressbar/v3"
 	"github.com/urfave/cli/v2"

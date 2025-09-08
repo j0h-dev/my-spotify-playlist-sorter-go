@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/auth"
-	clicommands "github.com/ItsOnlyGame/my-spotify-playlist-sorter-go/app/cli-commands"
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/app/auth"
+	clicommands "github.com/j0h-dev/my-spotify-playlist-sorter-go/app/cli-commands"
 	"github.com/urfave/cli/v2"
 	"github.com/zmb3/spotify/v2"
 )

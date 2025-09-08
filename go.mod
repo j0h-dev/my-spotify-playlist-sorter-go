@@ -1,4 +1,4 @@
-module github.com/ItsOnlyGame/my-spotify-playlist-sorter-go
+module github.com/j0h-dev/my-spotify-playlist-sorter-go
 
 go 1.24.0
 
