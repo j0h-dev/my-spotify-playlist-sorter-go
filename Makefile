@@ -32,9 +32,4 @@ test:
 	@echo "Running tests..."
 	go test -v $(PKG)
 
-# Install the CLI globally
-install: build
-	@echo "Installing $(APP_NAME)..."
-	@go install $(MAIN_ENTRY)
-
-.PHONY: all dev build run deps test install
+.PHONY: all dev build run deps test
