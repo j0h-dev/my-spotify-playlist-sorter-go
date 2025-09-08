@@ -6,3 +6,7 @@ build/
 # Token & credentials
 spotify_token.json
 spotify_credentials.json
+
+# App
+sps
+sps.exe
