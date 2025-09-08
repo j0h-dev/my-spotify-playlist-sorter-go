@@ -1,7 +1,6 @@
 # Variables
 APP_NAME := sps
 MAIN_ENTRY := ./app/main.go
-BUILD_DIR := build
 PKG := ./...
 
 # Default target
@@ -14,13 +13,12 @@ dev:
 # Build the application
 build:
 	@echo "Building $(APP_NAME)..."
-	@mkdir -p $(BUILD_DIR)
-	go build -o $(BUILD_DIR)/$(APP_NAME) $(MAIN_ENTRY)
+	go build -o $(APP_NAME) $(MAIN_ENTRY)
 
 # Run the application
 run: build
 	@echo "Running $(APP_NAME)..."
-	@$(BUILD_DIR)/$(APP_NAME)
+	@$(APP_NAME)
 
 # Install dependencies
 deps:
