@@ -32,13 +32,20 @@ jobs:
           mkdir -p build
           EXT=""
           if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/sps-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./app/main.go
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/sps-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./cmd/cli/main.go
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o build/lazysps-${{ matrix.goos }}-${{ matrix.goarch }}$EXT ./cmd/tui/main.go
 
-      - name: Upload binary artifact
+      - name: Upload sps artifact
         uses: actions/upload-artifact@v4
         with:
           name: sps-${{ matrix.goos }}-${{ matrix.goarch }}
           path: build/sps-${{ matrix.goos }}-${{ matrix.goarch }}*
+
+      - name: Upload lazysps artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lazysps-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: build/lazysps-${{ matrix.goos }}-${{ matrix.goarch }}*
 
   release:
     needs: build
