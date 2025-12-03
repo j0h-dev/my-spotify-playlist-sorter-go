@@ -46,14 +46,16 @@ func LoginURL(auth *spotifyauth.Authenticator) string {
 	return auth.AuthURL(STATE)
 }
 
-func WaitForToken(
+func ListenForToken(
 	auth *spotifyauth.Authenticator,
 	redirectURI string,
-) (*oauth2.Token, error) {
+	callback func(error, *oauth2.Token),
+) {
 
 	port, err := extractPortFromURL(redirectURI)
 	if err != nil {
-		return nil, err
+		callback(err, nil)
+		return
 	}
 
 	server := &http.Server{Addr: fmt.Sprintf(":%s", port)}
@@ -61,53 +63,55 @@ func WaitForToken(
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 
-	var token *oauth2.Token
-
 	http.HandleFunc("/api/auth", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Login successful! You can return to the app.")
-
-		token, err = auth.Token(r.Context(), STATE, r)
+		token, err := auth.Token(r.Context(), STATE, r)
 		if err != nil {
 			http.Error(w, "Failed to obtain token", http.StatusInternalServerError)
+			callback(err, nil)
 			return
 		}
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Authentication successful! You can close this window.")
 
 		go func() {
 			defer wg.Done()
 			server.Close()
+			callback(nil, token)
 		}()
 	})
 
 	go func() {
 		server.ListenAndServe()
 	}()
-
-	wg.Wait()
-	return token, nil
 }
 
 func Authenticate(
 	credentials *domain.SpotifyCredentials,
-) error {
+	callback func(error),
+) (loginUrl string) {
 	auth := NewAuthenticator(credentials)
+	loginUrl = LoginURL(auth)
 
-	loginUrl := LoginURL(auth)
-	fmt.Printf("Please log in to Spotify by visiting the following URL:\n\n%s\n\n", loginUrl)
+	ListenForToken(auth, credentials.RedirectURI, func(err error, token *oauth2.Token) {
+		if err != nil {
+			callback(err)
+			return
+		}
 
-	token, err := WaitForToken(auth, credentials.RedirectURI)
-	if err != nil {
-		return err
-	}
+		conf := config.ReadConfig()
+		conf.OAuthToken = token
+		conf.Credentials = credentials
 
-	conf := config.ReadConfig()
-	conf.OAuthToken = token
-	conf.Credentials = credentials
+		if err := config.SaveConfig(conf); err != nil {
+			callback(err)
+			return
+		}
 
-	if err := config.SaveConfig(conf); err != nil {
-		return err
-	}
+		callback(nil)
+	})
 
-	return nil
+	return loginUrl
 }
 
 func Login(cfg *conf.Config) (*spotify.Client, error) {

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/domain"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/spotify"
@@ -56,15 +57,24 @@ func (cmd *LoginCommand) Run(ctx *cli.Context) error {
 	fmt.Printf("Client Secret: %s\n", cmd.hideSecret(clientSecret))
 	fmt.Printf("Redirect URI: %s\n\n", cmd.hideSecret(redirectURI))
 
-	err := spotify.Authenticate(&domain.SpotifyCredentials{
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	loginUrl := spotify.Authenticate(&domain.SpotifyCredentials{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
 		RedirectURI:  redirectURI,
+	}, func(err error) {
+		if err != nil {
+			panic(fmt.Errorf("failed to authenticate: %w", err))
+		}
+
+		wg.Done()
 	})
 
-	if err != nil {
-		return fmt.Errorf("failed to authenticate: %w", err)
-	}
+	fmt.Printf("Please log in to Spotify by visiting the following URL:\n\n%s\n\n", loginUrl)
+
+	wg.Wait()
 
 	return nil
 }
