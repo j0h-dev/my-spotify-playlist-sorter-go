@@ -3,7 +3,6 @@ module github.com/j0h-dev/my-spotify-playlist-sorter-go
 go 1.24.0
 
 require (
-	github.com/elliotchance/orderedmap/v2 v2.4.0
 	github.com/mrz1836/go-countries v1.0.6
 	github.com/schollz/progressbar/v3 v3.16.0
 	github.com/urfave/cli/v2 v2.27.4
