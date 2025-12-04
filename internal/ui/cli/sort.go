@@ -66,7 +66,8 @@ func (cmd *SortCommand) Run(ctx *cli.Context) error {
 		country = countries.GetByCapital(capital).Alpha2
 	}
 
-	sorter.Run(spotifyClient, playlistId, country)
+	progress := NewProgressBar()
+	sorter.Run(spotifyClient, playlistId, country, progress)
 
 	return nil
 }

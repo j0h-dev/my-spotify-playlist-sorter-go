@@ -7,7 +7,7 @@ import (
 
 func FilterLocalTracks(
 	tracks []*spotify.PlaylistItem,
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) []*spotify.PlaylistItem {
 	tracksLength := len(tracks)
 

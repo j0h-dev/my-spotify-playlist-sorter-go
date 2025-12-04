@@ -36,14 +36,11 @@ func GetPlaylist(
 	sp *spotify.Client,
 	playlistId spotify.ID,
 	country string,
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) (*spotify.FullPlaylist, error) {
-	if progress != nil {
-		progress.Start(1, "Fetching playlist details")
-		defer progress.Finish()
-	}
-
 	ctx := context.Background()
+
+	progress.Start(1, "Fetching playlist details")
 
 	playlist, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
@@ -51,6 +48,7 @@ func GetPlaylist(
 		return nil, err
 	}
 
+	progress.Finish()
 	return playlist, nil
 }
 
@@ -58,7 +56,7 @@ func GetPlaylistTracks(
 	sp *spotify.Client,
 	playlist *spotify.FullPlaylist,
 	country string,
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) ([]*spotify.PlaylistItem, error) {
 	ctx := context.Background()
 
@@ -103,7 +101,7 @@ func AddTracksToPlaylist(
 	client *spotify.Client,
 	tracks []*spotify.PlaylistItem,
 	playlist *spotify.FullPlaylist,
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) error {
 	if progress != nil {
 		progress.Start(len(tracks), "Adding tracks to new playlist")
@@ -140,7 +138,7 @@ func ReorderPlaylistTracks(
 	playlistID spotify.ID,
 	original []*spotify.PlaylistItem,
 	sorted []*spotify.PlaylistItem,
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) error {
 	if progress != nil {
 		progress.Start(len(original), "Reordering playlist tracks")

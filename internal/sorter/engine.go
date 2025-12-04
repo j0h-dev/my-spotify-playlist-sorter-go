@@ -8,10 +8,13 @@ import (
 	spotifyApi "github.com/zmb3/spotify/v2"
 )
 
-func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string) error {
-	progress := ui.NewProgressBar()
-
-	playlist, err := spotify.GetPlaylist(client, playlistID, country, progress)
+func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string, progress ui.Progress) error {
+	playlist, err := spotify.GetPlaylist(
+		client,
+		playlistID,
+		country,
+		progress,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to get playlist: %w", err)
 	}

@@ -110,12 +110,19 @@ func (cmd *DuplicateCommand) Run(ctx *cli.Context) error {
 	isPlaylistPublic := ctx.Bool("public")
 	isPlaylistCollaborative := ctx.Bool("collaborative")
 
-	duplicator.Run(spotifyClient, playlistID, country, duplicator.PlaylistInfo{
-		Name:          playlistName,
-		Description:   description,
-		Public:        isPlaylistPublic,
-		Collaborative: isPlaylistCollaborative,
-	})
+	progress := NewProgressBar()
+	duplicator.Run(
+		spotifyClient,
+		playlistID,
+		country,
+		duplicator.PlaylistInfo{
+			Name:          playlistName,
+			Description:   description,
+			Public:        isPlaylistPublic,
+			Collaborative: isPlaylistCollaborative,
+		},
+		progress,
+	)
 
 	fmt.Printf("Successfully cloned playlist: %s\n", playlistName)
 

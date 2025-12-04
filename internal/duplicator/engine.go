@@ -9,9 +9,13 @@ import (
 	spotifyApi "github.com/zmb3/spotify/v2"
 )
 
-func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string, info PlaylistInfo) error {
-	progress := ui.NewProgressBar()
-
+func Run(
+	client *spotifyApi.Client,
+	playlistID spotifyApi.ID,
+	country string,
+	info PlaylistInfo,
+	progress ui.Progress,
+) error {
 	playlist, err := spotify.GetPlaylist(client, playlistID, country, progress)
 
 	if err != nil {

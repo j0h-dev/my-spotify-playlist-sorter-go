@@ -13,7 +13,7 @@ func RemoveDuplicateTracksFromPlaylist(
 	playlistID spotify.ID,
 	tracks []*spotify.PlaylistItem,
 	// Optional progress bar
-	progress *ui.ProgressBar,
+	progress ui.Progress,
 ) ([]*spotify.PlaylistItem, error) {
 
 	if progress != nil {
