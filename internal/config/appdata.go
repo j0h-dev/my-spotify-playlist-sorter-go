@@ -1,4 +1,4 @@
-package appdata
+package config
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 
 const APP_NAME = "spotify-playlist-sorter"
 
-func GetAppDataDir() (string, error) {
+func getAppDataDir() (string, error) {
 	var baseDir string
 	var err error
 
