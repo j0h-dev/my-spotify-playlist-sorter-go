@@ -20,15 +20,17 @@ const (
 	ScreenLogin Screen = iota
 	ScreenMenu
 	ScreenSort
+	ScreenDuplicate
 )
 
 type App struct {
 	current Screen
 
-	initializedScreens [3]bool
+	initializedScreens [4]bool
 	menu               *MenuModel
 	login              *LoginModel
 	sort               *SortModel
+	duplicate          *DuplicateModel
 
 	width  int
 	height int
@@ -45,10 +47,11 @@ func NewApp() App {
 	}
 
 	return App{
-		current: firstScreen,
-		menu:    NewMenuModel(),
-		login:   NewLoginModel(),
-		sort:    NewSortModel(),
+		current:   firstScreen,
+		menu:      NewMenuModel(),
+		login:     NewLoginModel(),
+		sort:      NewSortModel(),
+		duplicate: NewDuplicateModel(),
 	}
 }
 
@@ -69,10 +72,12 @@ func (a App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m, cmd := a.menu.Update(msg)
 		a.menu = m.(*MenuModel)
 
-		if a.menu.chosen == "sort" {
+		switch a.menu.chosen {
+		case "duplicate":
+			a.current = ScreenDuplicate
+		case "sort":
 			a.current = ScreenSort
 		}
-
 		a.menu.chosen = ""
 
 		if !a.initializedScreens[ScreenMenu] {
@@ -118,8 +123,23 @@ func (a App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		return a, cmd
-	}
 
+	case ScreenDuplicate:
+		m, cmd := a.duplicate.Update(msg)
+		a.duplicate = m.(*DuplicateModel)
+
+		if a.duplicate.back {
+			a.current = ScreenMenu
+			a.duplicate.back = false
+		}
+
+		if !a.initializedScreens[ScreenDuplicate] {
+			cmd = tea.Batch(cmd, a.duplicate.Init())
+			a.initializedScreens[ScreenDuplicate] = true
+		}
+
+		return a, cmd
+	}
 	return a, nil
 }
 
@@ -131,6 +151,8 @@ func (a App) View() string {
 		return a.login.View()
 	case ScreenSort:
 		return a.sort.View()
+	case ScreenDuplicate:
+		return a.duplicate.View()
 	default:
 		return ""
 	}
