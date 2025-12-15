@@ -15,8 +15,8 @@ Create a Spotify application to get your `CLIENT_ID` and `CLIENT_SECRET` from th
 
 Next you need to choose you variant of the application.
 
-1. Terminal App
-2. CLI App
+1. Terminal App (lazysps)
+2. CLI App (sps)
 
 Install you prefered variation from [releases](https://github.com/j0h-dev/my-spotify-playlist-sorter-go/releases/latest).
 
