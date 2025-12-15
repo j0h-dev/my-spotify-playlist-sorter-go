@@ -8,6 +8,7 @@ import (
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/config"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/sorter"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/spotify"
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/ui/tui/components"
 
 	spotifyApi "github.com/zmb3/spotify/v2"
 )
@@ -34,7 +35,7 @@ type SortModel struct {
 
 	back bool
 
-	progressBar *ProgressBar
+	progressBar *components.ProgressBar
 	sorting     bool
 	exit        bool
 }
@@ -45,7 +46,7 @@ func NewSortModel() *SortModel {
 		urlInput:     newTextInput("URL: ", "https://open.spotify.com/playlist/...", 80, true),
 		countryInput: newTextInput("Country: ", "FI, SV, US...", 20, false),
 		focusIndex:   SortUrlFieldFocus,
-		progressBar:  NewProgressBar(),
+		progressBar:  components.NewProgressBar(),
 	}
 }
 
@@ -121,6 +122,7 @@ func (m *SortModel) handleEnterKey() (tea.Model, tea.Cmd) {
 			m.back = true
 		}
 	}
+
 	return m, nil
 }
 
@@ -140,7 +142,7 @@ func (m *SortModel) startSorting() {
 		if err != nil {
 			panic(fmt.Sprintf("Failed to sort playlist: %v", err))
 		}
-		m.progressBar.label = "Sorting completed!"
+		m.progressBar.SetLabel("Sorting completed!")
 		m.exit = true
 	}()
 }
@@ -197,7 +199,7 @@ func (m *SortModel) View() string {
 
 // renderSortingView generates the view for the sorting progress state.
 func (m *SortModel) renderSortingView() string {
-	return fmt.Sprintf("%s\n%s\n%s\n", APP_TITLE, m.progressBar.label, m.progressBar.View())
+	return fmt.Sprintf("%s\n%s\n%s\n", APP_TITLE, m.progressBar.Label(), m.progressBar.View())
 }
 
 // renderFormView generates the view for the input form and buttons.

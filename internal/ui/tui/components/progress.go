@@ -1,4 +1,4 @@
-package tui
+package components
 
 import (
 	"github.com/charmbracelet/bubbles/progress"
@@ -51,4 +51,12 @@ func (p *ProgressBar) Width() int {
 
 func (p *ProgressBar) SetWidth(width int) {
 	p.bar.Width = width
+}
+
+func (p *ProgressBar) Label() string {
+	return p.label
+}
+
+func (p *ProgressBar) SetLabel(label string) {
+	p.label = label
 }
