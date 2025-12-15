@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/config"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/domain"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/spotify"
 )
@@ -44,6 +45,7 @@ type LoginModel struct {
 }
 
 func NewLoginModel() *LoginModel {
+
 	// initialize text inputs
 	clientIdField := textinput.New()
 	clientIdField.Placeholder = "client id"
@@ -60,6 +62,12 @@ func NewLoginModel() *LoginModel {
 	clientRedirectField.Placeholder = "http://127.0.0.1:8000/api/auth"
 	clientRedirectField.Prompt = "Redirect URI: "
 	clientRedirectField.Width = 80
+
+	conf := config.ReadConfig()
+	if conf.Credentials != nil {
+		clientIdField.SetValue(conf.Credentials.ClientID)
+		clientRedirectField.SetValue(conf.Credentials.RedirectURI)
+	}
 
 	loadingSpinner := spinner.New()
 	loadingSpinner.Spinner = spinner.Dot
