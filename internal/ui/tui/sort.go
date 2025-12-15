@@ -2,7 +2,6 @@ package tui
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -23,12 +22,6 @@ const (
 	SortSubmitButtonFocus = iota
 	SortBackButtonFocus
 )
-
-const (
-	MaxProgressBarWidth = 80
-)
-
-type tickMsg time.Time
 
 type SortModel struct {
 	cursor int
@@ -54,18 +47,6 @@ func NewSortModel() *SortModel {
 		focusIndex:   SortUrlFieldFocus,
 		progressBar:  NewProgressBar(),
 	}
-}
-
-// newTextInput creates and configures a new text input field with the given parameters.
-func newTextInput(prompt, placeholder string, width int, focused bool) textinput.Model {
-	input := textinput.New()
-	input.Placeholder = placeholder
-	input.Prompt = prompt
-	input.Width = width
-	if focused {
-		input.Focus()
-	}
-	return input
 }
 
 // Init initializes the SortModel and returns the initial command to start ticking.
@@ -235,11 +216,4 @@ func (m *SortModel) renderButtons() string {
 		return "- Submit - [ Back ]"
 	}
 	return "- Submit - - Back -"
-}
-
-// tickCmd creates a command that sends a tick message every second.
-func tickCmd() tea.Cmd {
-	return tea.Tick(time.Second*1, func(t time.Time) tea.Msg {
-		return tickMsg(t)
-	})
 }
