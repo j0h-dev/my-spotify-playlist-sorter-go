@@ -9,4 +9,19 @@ Sorting of the playlist follows these rules:
 3. Albums are grouped by artist and release date. (Artist is determined from the album rather than the track)
 4. Artist groups are sorted depending on the first tracks appearance date on the playlist.
 
-# To-do: Add get started guide
+# Getting started
+
+Create a Spotify application to get your `CLIENT_ID` and `CLIENT_SECRET` from the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications).
+
+Next you need to choose you variant of the application.
+
+1. Terminal App
+2. CLI App
+
+Install you prefered variation from [releases](https://github.com/j0h-dev/my-spotify-playlist-sorter-go/releases/latest)
+
+Just run the application and follow the instructions.
+
+# Licence
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
