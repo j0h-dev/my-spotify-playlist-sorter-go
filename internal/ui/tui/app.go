@@ -1,8 +1,11 @@
 package tui
 
 import (
+	"context"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/config"
+	"github.com/j0h-dev/my-spotify-playlist-sorter-go/internal/spotify"
 )
 
 const APP_TITLE = `
@@ -44,6 +47,16 @@ func NewApp() App {
 	conf := config.ReadConfig()
 	if conf.Credentials == nil {
 		firstScreen = ScreenLogin
+	} else {
+		spotifyClient, err := spotify.Login(conf)
+		if err != nil {
+			firstScreen = ScreenLogin
+		}
+
+		_, err = spotifyClient.CurrentUser(context.Background())
+		if err != nil {
+			firstScreen = ScreenLogin
+		}
 	}
 
 	return App{
