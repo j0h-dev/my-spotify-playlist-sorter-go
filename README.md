@@ -1,5 +1,7 @@
 # Spotify playlist sorter
 
+![](.github/assets/preview.png)
+
 This script sorts your Spotify playlist.
 
 Sorting of the playlist follows these rules:
