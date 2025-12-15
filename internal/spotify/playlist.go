@@ -40,7 +40,10 @@ func GetPlaylist(
 ) (*spotify.FullPlaylist, error) {
 	ctx := context.Background()
 
-	progress.Start(1, "Fetching playlist details")
+	if progress != nil {
+		progress.Start(1, "Fetching playlist details")
+		defer progress.Finish()
+	}
 
 	playlist, err := sp.GetPlaylist(ctx, playlistId, spotify.RequestOption(spotify.Country(country)))
 
@@ -48,7 +51,6 @@ func GetPlaylist(
 		return nil, err
 	}
 
-	progress.Finish()
 	return playlist, nil
 }
 
@@ -88,7 +90,11 @@ func GetPlaylistTracks(
 
 		// Stop when we've fetched all items
 		offset += len(page.Items)
-		progress.Advance(len(page.Items))
+
+		if progress != nil {
+			progress.Advance(len(page.Items))
+		}
+
 		if offset >= int(page.Total) {
 			break
 		}
