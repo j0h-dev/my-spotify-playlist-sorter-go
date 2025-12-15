@@ -65,10 +65,6 @@ func NewLoginModel() *LoginModel {
 	loadingSpinner.Spinner = spinner.Dot
 	loadingSpinner.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 
-	clientIdField.SetValue("b30517e8fa8444e78583cdd7021effc3")
-	clientSecretField.SetValue("abbb803cdb734aaf88d9ba1eff344fe2")
-	clientRedirectField.SetValue("http://127.0.0.1:8000/api/auth")
-
 	return &LoginModel{
 		clientIdField:       clientIdField,
 		clientSecretField:   clientSecretField,
