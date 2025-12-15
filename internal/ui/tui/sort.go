@@ -130,9 +130,15 @@ func (m *SortModel) handleKeyMsg(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 // handleEnterKey handles the "enter" key press, triggering actions based on the current focus.
 func (m *SortModel) handleEnterKey() (tea.Model, tea.Cmd) {
-	if m.focusIndex == SortButtonsFocus && m.buttonFocusIndex == SortSubmitButtonFocus {
-		m.startSorting()
-		m.sorting = true
+	if m.focusIndex == SortButtonsFocus {
+		if m.buttonFocusIndex == SortSubmitButtonFocus {
+			m.startSorting()
+			m.sorting = true
+		}
+
+		if m.buttonFocusIndex == SortBackButtonFocus {
+			m.back = true
+		}
 	}
 	return m, nil
 }
