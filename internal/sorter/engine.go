@@ -26,7 +26,9 @@ func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string, pr
 
 	var finalSorted []*spotifyApi.PlaylistItem
 
-	progress.Start(len(originalTracks), "Sorting playlist")
+	if progress != nil {
+		progress.Start(len(originalTracks), "Sorting playlist")
+	}
 
 	artistGroups := GroupTracksByArtist(originalTracks)
 
@@ -44,8 +46,14 @@ func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string, pr
 		// Flatten album groups into final slice
 		for _, album := range albumGroups {
 			finalSorted = append(finalSorted, album.Tracks...)
-			progress.Advance(len(album.Tracks))
+			if progress != nil {
+				progress.Advance(len(album.Tracks))
+			}
 		}
+	}
+
+	if progress != nil {
+		progress.Finish()
 	}
 
 	// Reorder playlist in Spotify
@@ -54,6 +62,5 @@ func Run(client *spotifyApi.Client, playlistID spotifyApi.ID, country string, pr
 		return fmt.Errorf("failed to reorder playlist: %w", err)
 	}
 
-	fmt.Println("Playlist successfully sorted.")
 	return nil
 }
